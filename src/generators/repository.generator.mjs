@@ -33,6 +33,13 @@ export class RepositoryGenerator extends BaseGenerator {
         create(data: {{modelClass}}Dto): Promise<{{modelClass}}> {
             return {{modelClass}}.create(instanceToPlain(data));
         }
+
+        async update(id: number, data: {{modelClass}}Dto): Promise<{{modelClass}}> {
+            data.id = undefined;
+            let item = await this.findById(id);
+            item.set(data);
+            return item.save();
+        }
     
         findById(id: number): Promise<{{modelClass}}> {
             return this.model.findOne({ where: { id } });
