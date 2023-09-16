@@ -74,7 +74,7 @@ export class ModelGenerator extends BaseGenerator {
       modelFile = modelFile.replace(/{{modelClass}}/g, this.modelName);
       modelFile = this.processFields(modelFile);
 
-      this.writeFile(this.folderPath, this.tableName + '.model.ts', modelFile);
+      this.writeFile(this.folderPath, BaseGenerator.camelToSnakeCase(this.modelName) + '.model.ts', modelFile);
     }
 
     static transformMigrationObjectToJson(migrationObject) {

@@ -3,6 +3,7 @@
 import { Command } from 'commander';
 import { input, editor } from '@inquirer/prompts';
 import { ModelGenerator } from './generators/model.generator.mjs';
+import { DtoGenerator } from './generators/dto.generator.mjs';
 //import { ModelGenerator } from './generators/model.generator';
 
 const program = new Command();
@@ -23,7 +24,7 @@ program.command('crud')
 
   });
 
-  program.command('g model')
+program.command('model')
   .description('Create automatically a Model')
   .action(async () => {
 
@@ -32,6 +33,18 @@ program.command('crud')
     const json = await editor({ message: 'Copy JSON migration' });
 
     let generator = new ModelGenerator(name, table, json);
+    generator.generate();
+
+  });
+
+  program.command('dto')
+  .description('Create automatically a DTO')
+  .action(async () => {
+
+    const name = await input({ message: 'What is the name of the model?' });
+    const json = await editor({ message: 'Copy JSON migration' });
+
+    let generator = new DtoGenerator(name, json);
     generator.generate();
 
   });
