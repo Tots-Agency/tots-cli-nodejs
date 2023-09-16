@@ -14,12 +14,65 @@ export class ModelGenerator extends BaseGenerator {
       this.modelName = modelName;
       this.fields = ModelGenerator.transformMigrationObjectToJson(fields);
     }
+
+    processFields(modelFile) {
+      let data = '';
+
+      const keys = Object.keys(this.fields);
+      for (const key of keys) {
+        const params = this.fields[key];
+        if(key == 'created_at'){
+          data += this.printCreatedAt(key);
+        } else if(key == 'updated_at'){
+          data += this.printUpdatedAt(key);
+        } else if(key == 'deleted_at'){
+          data += this.printDeletedAt(key);
+        } else if (params.type == 'tiny_integer') {
+          data += this.printColumn(key, 'number');
+        } else if (params.type == 'integer') {
+          data += this.printColumn(key, 'number');
+        }else {
+          data += this.printColumn(key, 'string');
+        }
+      }
+
+      return modelFile.replace(/{{columns}}/g, data);
+    }
+
+    printUpdatedAt(key) {
+      return `      @UpdatedAt
+      ${key}: Date;
+    
+`;
+    }
+
+    printCreatedAt(key) {
+      return `      @CreatedAt
+      ${key}: Date;
+    
+`;
+    }
+
+    printDeletedAt(key) {
+      return `      @DeletedAt
+      ${key}: Date;
+    
+`;
+    }
+
+    printColumn(key, type) {
+      return `      @Column
+      ${key}: ${type};
+    
+`;
+    }
     
     generate() {
       //let modelFile = this.readFile(this.filePath);
       let modelFile = this.fileContent;
       modelFile = modelFile.replace(/{{table}}/g, 'product');
       modelFile = modelFile.replace(/{{modelClass}}/g, 'Product');
+      modelFile = this.processFields(modelFile);
 
       this.writeFile(this.folderPath, 'product.ts', modelFile);
     }
@@ -44,133 +97,6 @@ export class ModelGenerator extends BaseGenerator {
         timestamps: true,
     })
     export class {{modelClass}} extends Model {
-      @Column
-      firstname: string;
-    
-      @Column
-      lastname: string;
-    
-      @Column
-      email: string;
-    
-      @Column
-      password: string;
-    
-      @Column
-      photo: string;
-    
-      @Column
-      phone: string;
-    
-      @Column
-      role: number;
-    
-      @Column
-      status: number;
-    
-      @Column
-      is_notification: number;
-    
-      @Column
-      caption: string;
-    
-      @Column
-      timezone: string;
-    
-      @CreatedAt
-      created_at: Date;
-    
-      @UpdatedAt
-      updated_at: Date;
-    
-      @DeletedAt
-      deleted_at: Date;
+{{columns}}
     }`;
 }
-
-
-
-/*const jsonString = `{
-    id: {
-      allowNull: false,
-      autoIncrement: true,
-      primaryKey: true,
-      type: Sequelize.INTEGER
-    },
-    firstname: {
-      type: Sequelize.STRING
-    },
-    lastname: {
-      type: Sequelize.STRING
-    },
-    email: {
-      type: Sequelize.STRING
-    },
-    password: {
-      type: Sequelize.TEXT
-    },
-    photo: {
-      type: Sequelize.STRING
-    },
-    phone: {
-      type: Sequelize.STRING(50)
-    },
-    role: {
-      type: Sequelize.INTEGER(1),
-      allowNull: false,
-      defaultValue: 0
-    },
-    status: {
-      type: Sequelize.INTEGER(1),
-      allowNull: false,
-      defaultValue: 0
-    },
-    is_notification: {
-      type: Sequelize.INTEGER(1),
-      allowNull: false,
-      defaultValue: 0
-    },
-    caption: {
-      type: Sequelize.TEXT
-    },
-    timezone: {
-      type: Sequelize.STRING(50)
-    },
-    created_at: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    updated_at: {
-      allowNull: false,
-      type: Sequelize.DATE
-    },
-    deleted_at:{
-      type: Sequelize.DATE,
-      allowNull: true,
-      defaultValue: null
-    }
-}`;
-
-  const jsonStringValido = jsonString
-  .replace(/([a-zA-Z_]+)(\s*):/g, '"$1":')
-  .replace(/Sequelize.INTEGER\(1\)/g, '"tiny_integer"')
-  .replace(/Sequelize.INTEGER/g, '"integer"')
-  .replace(/Sequelize.TEXT/g, '"text"')
-  .replace(/Sequelize.DATE/g, '"date"')
-  .replace(/Sequelize.STRING\(50\)/g, '"string"')
-  .replace(/Sequelize.STRING/g, '"string"');
-  //console.log(jsonStringValido);
-  const jsonObject = JSON.parse(jsonStringValido);
-  //console.log(jsonObject);
-
-let modelFile = fs.readFileSync(filePath, 'utf8');
-modelFile = modelFile.replace(/{{table}}/g, 'product');
-modelFile = modelFile.replace(/{{modelClass}}/g, 'Product');
-
-// Asegúrate de que la carpeta exista, o créala si no existe
-if (!fs.existsSync(folderPath)) {
-    fs.mkdirSync(folderPath, { recursive: true }); // La opción recursive:true crea directorios padres si no existen
-}
-
-fs.writeFileSync(path.join(folderPath, 'product.ts'), modelFile);
-console.log(modelFile);*/
