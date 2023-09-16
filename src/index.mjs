@@ -21,7 +21,7 @@ program.command('crud')
     const table = await input({ message: 'What is the table of the model?' });
     const json = await editor({ message: 'Copy JSON migration' });
 
-    new ModelGenerator(name, table, json).generate();
+    new ModelGenerator(table, name, json).generate();
     new DtoGenerator(name, json).generate();
     new RepositoryGenerator(name).generate();
     new ControllerGenerator(name).generate();
