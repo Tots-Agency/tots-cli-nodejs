@@ -2,6 +2,8 @@
 
 import { Command } from 'commander';
 import { input, editor } from '@inquirer/prompts';
+import { ModelGenerator } from './generators/model.generator.mjs';
+//import { ModelGenerator } from './generators/model.generator';
 
 const program = new Command();
 
@@ -18,6 +20,19 @@ program.command('crud')
     const json = await editor({ message: 'Copy JSON migration' });
       
     console.log(name);
+
+  });
+
+  program.command('g model')
+  .description('Create automatically a Model')
+  .action(async () => {
+
+    const name = await input({ message: 'What is the name of the model?' });
+    const table = await input({ message: 'What is the table of the model?' });
+    const json = await editor({ message: 'Copy JSON migration' });
+
+    let generator = new ModelGenerator(name, table, json);
+    generator.generate();
 
   });
 
