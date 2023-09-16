@@ -12,7 +12,7 @@ export class ModelGenerator extends BaseGenerator {
       super();
       this.tableName = tableName;
       this.modelName = modelName;
-      this.fields = ModelGenerator.transformMigrationObjectToJson(fields);
+      this.fields = BaseGenerator.transformMigrationObjectToJson(fields);
     }
 
     processFields(modelFile) {
@@ -75,18 +75,6 @@ export class ModelGenerator extends BaseGenerator {
       modelFile = this.processFields(modelFile);
 
       this.writeFile(this.folderPath, BaseGenerator.camelToSnakeCase(this.modelName) + '.model.ts', modelFile);
-    }
-
-    static transformMigrationObjectToJson(migrationObject) {
-      const jsonStringValido = migrationObject
-      .replace(/([a-zA-Z_]+)(\s*):/g, '"$1":')
-      .replace(/Sequelize.INTEGER\(1\)/g, '"tiny_integer"')
-      .replace(/Sequelize.INTEGER/g, '"integer"')
-      .replace(/Sequelize.TEXT/g, '"text"')
-      .replace(/Sequelize.DATE/g, '"date"')
-      .replace(/Sequelize.STRING\(50\)/g, '"string"')
-      .replace(/Sequelize.STRING/g, '"string"');
-      return JSON.parse(jsonStringValido);
     }
 
     fileContent = `
