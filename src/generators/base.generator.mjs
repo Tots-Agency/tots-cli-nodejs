@@ -20,6 +20,7 @@ export class BaseGenerator {
         .replace(/([a-zA-Z_]+)(\s*):/g, '"$1":')
         .replace(/Sequelize.INTEGER\(1\)/g, '"tiny_integer"')
         .replace(/Sequelize.INTEGER/g, '"integer"')
+        .replace(/Sequelize.BIGINT.UNSIGNED/g, '"integer"')
         .replace(/Sequelize.TEXT/g, '"text"')
         .replace(/Sequelize.DATE/g, '"date"')
         .replace(/Sequelize.STRING\(50\)/g, '"string"')
