@@ -18,9 +18,13 @@ program.command('crud')
   .action(async () => {
 
     const name = await input({ message: 'What is the name of the model?' });
+    const table = await input({ message: 'What is the table of the model?' });
     const json = await editor({ message: 'Copy JSON migration' });
-      
-    console.log(name);
+
+    new ModelGenerator(name, table, json).generate();
+    new DtoGenerator(name, json).generate();
+    new RepositoryGenerator(name).generate();
+    new ControllerGenerator(name).generate();
 
   });
 
