@@ -4,6 +4,9 @@
   "description": "",
   "type": "module",
   "main": "src/index.mjs",
+  "bin": {
+    "tots": "src/index.mjs"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.mjs"
