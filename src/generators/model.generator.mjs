@@ -21,7 +21,9 @@ export class ModelGenerator extends BaseGenerator {
       const keys = Object.keys(this.fields);
       for (const key of keys) {
         const params = this.fields[key];
-        if(key == 'created_at'){
+        if(key == 'id'){
+          continue;
+        } else if(key == 'created_at'){
           data += this.printCreatedAt(key);
         } else if(key == 'updated_at'){
           data += this.printUpdatedAt(key);
