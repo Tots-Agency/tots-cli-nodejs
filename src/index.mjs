@@ -1,10 +1,9 @@
 #! /usr/bin/env node
-
 import { Command } from 'commander';
 import { input, editor } from '@inquirer/prompts';
 import { ModelGenerator } from './generators/model.generator.mjs';
 import { DtoGenerator } from './generators/dto.generator.mjs';
-//import { ModelGenerator } from './generators/model.generator';
+import { RepositoryGenerator } from './generators/repository.generator.mjs';
 
 const program = new Command();
 
@@ -45,6 +44,17 @@ program.command('model')
     const json = await editor({ message: 'Copy JSON migration' });
 
     let generator = new DtoGenerator(name, json);
+    generator.generate();
+
+  });
+
+  program.command('repository')
+  .description('Create automatically a Repository')
+  .action(async () => {
+
+    const name = await input({ message: 'What is the name of the model?' });
+
+    let generator = new RepositoryGenerator(name);
     generator.generate();
 
   });
