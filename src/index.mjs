@@ -11,7 +11,7 @@ const program = new Command();
 program
   .name('tots-cli')
   .description('CLI to some NodeJs utilities')
-  .version('0.0.1');
+  .version('0.0.9');
 
 program.command('crud')
   .description('Create automatically a CRUD')
