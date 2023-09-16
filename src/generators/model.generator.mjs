@@ -70,11 +70,11 @@ export class ModelGenerator extends BaseGenerator {
     generate() {
       //let modelFile = this.readFile(this.filePath);
       let modelFile = this.fileContent;
-      modelFile = modelFile.replace(/{{table}}/g, 'product');
-      modelFile = modelFile.replace(/{{modelClass}}/g, 'Product');
+      modelFile = modelFile.replace(/{{table}}/g, this.tableName);
+      modelFile = modelFile.replace(/{{modelClass}}/g, this.modelName);
       modelFile = this.processFields(modelFile);
 
-      this.writeFile(this.folderPath, 'product.ts', modelFile);
+      this.writeFile(this.folderPath, this.tableName + '.model.ts', modelFile);
     }
 
     static transformMigrationObjectToJson(migrationObject) {
