@@ -1,7 +1,7 @@
 import { BaseGenerator } from "./base.generator.mjs";
 
 export class ModelGenerator extends BaseGenerator {
-    filePath = './files/model.txt';
+    filePath = '/../../files/model.txt';
     folderPath = 'src/models';
 
     tableName = '';
@@ -16,7 +16,8 @@ export class ModelGenerator extends BaseGenerator {
     }
     
     generate() {
-      let modelFile = this.readFile(this.filePath);
+      //let modelFile = this.readFile(this.filePath);
+      let modelFile = this.fileContent;
       modelFile = modelFile.replace(/{{table}}/g, 'product');
       modelFile = modelFile.replace(/{{modelClass}}/g, 'Product');
 
@@ -34,6 +35,57 @@ export class ModelGenerator extends BaseGenerator {
       .replace(/Sequelize.STRING/g, '"string"');
       return JSON.parse(jsonStringValido);
     }
+
+    fileContent = `
+    import { Column, CreatedAt, DeletedAt, Model, Table, UpdatedAt } from 'sequelize-typescript';
+    
+    @Table({
+        tableName: '{{table}}',
+        timestamps: true,
+    })
+    export class {{modelClass}} extends Model {
+      @Column
+      firstname: string;
+    
+      @Column
+      lastname: string;
+    
+      @Column
+      email: string;
+    
+      @Column
+      password: string;
+    
+      @Column
+      photo: string;
+    
+      @Column
+      phone: string;
+    
+      @Column
+      role: number;
+    
+      @Column
+      status: number;
+    
+      @Column
+      is_notification: number;
+    
+      @Column
+      caption: string;
+    
+      @Column
+      timezone: string;
+    
+      @CreatedAt
+      created_at: Date;
+    
+      @UpdatedAt
+      updated_at: Date;
+    
+      @DeletedAt
+      deleted_at: Date;
+    }`;
 }
 
 
