@@ -18,12 +18,11 @@ export class ControllerGenerator extends BaseGenerator {
       this.writeFile(this.folderPath, BaseGenerator.camelToSnakeCase(this.modelName) + '.controller.ts', modelFile);
     }
 
-    fileContent = `import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+    fileContent = `import { Body, Controller, Delete, Get, Param, Patch, Post, Request, Query } from '@nestjs/common';
     import { TotsSequelizeQuery } from '@tots/sequelize-query';
     import { plainToClass, plainToInstance } from 'class-transformer';
     import { SuccessDto } from '@tots/core-node';
     import { {{modelClass}}Dto } from 'src/dtos/{{modelFile}}.dto';
-    import { HashHelper } from 'src/helpers/hash.helper';
     import { {{modelClass}} } from 'src/models/{{modelFile}}.model';
     import { {{modelClass}}Repository } from 'src/repositories/{{modelFile}}.repository';
     
@@ -33,32 +32,32 @@ export class ControllerGenerator extends BaseGenerator {
       constructor(private readonly repository: {{modelClass}}Repository) {}
     
       @Post()
-      async create(@Body() request: {{modelClass}}Dto) {
+      async create(@Body() request: {{modelClass}}Dto, @Request() req: any) {
         let dto: {{modelClass}}Dto = plainToClass({{modelClass}}Dto, request);
         let item: {{modelClass}} = await this.repository.create(dto);
         return {{modelClass}}Dto.fromModel(item);
       }
     
       @Get()
-      async findAll(@Query('page') page: number = 1, @Query('per_page') pageSize: number = 10, @Query('filters') filters: string = '') {
+      async findAll(@Query('page') page: number = 1, @Query('per_page') pageSize: number = 10, @Query('filters') filters: string = '', @Request() req: any) {
         let filter = new TotsSequelizeQuery(this.repository.getModel(), filters);
-        return await filter.paginate(page, pageSize);
+        return await filter.paginate(+page, +pageSize);
       }
     
       @Get(':id')
-      async findOne(@Param('id') id: string) {
+      async findOne(@Param('id') id: string, @Request() req: any) {
         let item: {{modelClass}} = await this.repository.findByIdOrFail(+id);
         return {{modelClass}}Dto.fromModel(item);
       }
     
       @Patch(':id')
-      async update(@Param('id') id: string, @Body() update: {{modelClass}}Dto) {
+      async update(@Param('id') id: string, @Body() update: {{modelClass}}Dto, @Request() req: any) {
         let item: {{modelClass}} = await this.repository.update(+id, update);
         return {{modelClass}}Dto.fromModel(item);
       }
     
       @Delete(':id')
-      async remove(@Param('id') id: string) {
+      async remove(@Param('id') id: string, @Request() req: any) {
         await this.repository.removeById(+id);
         return new SuccessDto();
       }
